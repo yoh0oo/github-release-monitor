@@ -1,0 +1,70 @@
+name: Monitor GitHub releases
+
+on:
+  schedule:
+    # GitHub Actions 的 cron 使用 UTC；这里每 30 分钟执行一次。
+    - cron: "0,30 * * * *"
+  workflow_dispatch:
+    inputs:
+      force_notify:
+        description: "忽略已有状态，通知所有仓库的当前版本（用于测试飞书）"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-monitor-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run tests
+        id: tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Check releases and notify Feishu
+        id: monitor
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.MONITOR_GITHUB_TOKEN || github.token }}
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          FEISHU_WEBHOOK_SECRET: ${{ secrets.FEISHU_WEBHOOK_SECRET }}
+          FORCE_NOTIFY: ${{ inputs.force_notify }}
+        run: |
+          args=()
+          if [[ "$FORCE_NOTIFY" == "true" ]]; then
+            args+=(--force-notify)
+          fi
+          python src/release_monitor.py "${args[@]}"
+
+      - name: Persist release state
+        if: always() && steps.tests.outcome == 'success'
+        run: |
+          if git diff --quiet -- state/releases.json; then
+            echo "Release state is unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/releases.json
+          git commit -m "chore: update release monitor state [skip ci]"
+          git push
+
+      - name: Fail when monitoring had errors
+        if: steps.monitor.outcome == 'failure'
+        run: exit 1

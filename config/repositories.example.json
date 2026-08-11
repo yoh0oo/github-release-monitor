@@ -1,0 +1,16 @@
+{
+  "notify_on_first_run": false,
+  "repositories": [
+    {
+      "repo": "cli/cli",
+      "name": "GitHub CLI",
+      "include_prereleases": false
+    },
+    {
+      "repo": "microsoft/vscode",
+      "name": "Visual Studio Code",
+      "include_prereleases": false
+    },
+    "astral-sh/uv"
+  ]
+}
