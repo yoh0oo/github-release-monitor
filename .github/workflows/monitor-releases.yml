@@ -27,6 +27,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # schedule 只从默认分支触发，但实际配置和状态统一放在 monitor 分支。
+          ref: monitor
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -63,7 +66,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add state/releases.json
           git commit -m "chore: update release monitor state [skip ci]"
-          git push
+          git push origin HEAD:monitor
 
       - name: Fail when monitoring had errors
         if: steps.monitor.outcome == 'failure'
