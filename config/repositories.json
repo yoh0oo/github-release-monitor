@@ -1,4 +1,9 @@
 {
   "notify_on_first_run": false,
-  "repositories": []
+  "repositories": [
+    "mofeng-git/One-KVM",
+    "komari-monitor/komari",
+    "router-for-me/CLIProxyAPI",
+    "seakee/CPA-Manager-Plus"
+  ]
 }

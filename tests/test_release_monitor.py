@@ -204,7 +204,9 @@ class MonitorTests(unittest.TestCase):
             webhook_secret=None,
         )
 
-        self.assertFalse(changed)
+        # The failed release is not advanced; the one-time config fingerprint
+        # migration may still make the state file dirty.
+        self.assertTrue(changed)
         self.assertEqual(len(errors), 1)
         self.assertEqual(state["repositories"]["owner/repo"]["tag_name"], "v1")
 
@@ -225,6 +227,35 @@ class MonitorTests(unittest.TestCase):
         self.assertFalse(changed)
         self.assertEqual(errors, [])
         self.assertEqual(state["repositories"], {})
+        send_mock.assert_not_called()
+
+    @patch("release_monitor.send_feishu_notification")
+    def test_config_change_clears_legacy_state(self, send_mock) -> None:
+        state = {
+            "version": 1,
+            "repositories": {
+                "old-owner/old-repo": {
+                    "release_id": 1,
+                    "tag_name": "v1",
+                    "published_at": "2026-01-01T00:00:00Z",
+                }
+            },
+        }
+        new_repository = release_monitor.RepositoryConfig("new-owner/new-repo", "New Repo")
+        config = release_monitor.MonitorConfig([new_repository])
+
+        changed, errors = release_monitor.monitor(
+            config,
+            state,
+            github_client=FakeGitHubClient(self.release),
+            webhook_url=None,
+            webhook_secret=None,
+        )
+
+        self.assertTrue(changed)
+        self.assertEqual(errors, [])
+        self.assertEqual(set(state["repositories"]), {"new-owner/new-repo"})
+        self.assertIn("config_fingerprint", state)
         send_mock.assert_not_called()
 
 

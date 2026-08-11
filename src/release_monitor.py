@@ -46,6 +46,24 @@ class MonitorConfig:
     notify_on_first_run: bool = False
 
 
+def config_fingerprint(config: MonitorConfig) -> str:
+    """Return a stable identifier for the set of monitored repositories."""
+    normalized = {
+        "repositories": sorted(
+            (
+                {
+                    "repo": repository.repo.lower(),
+                    "include_prereleases": repository.include_prereleases,
+                }
+                for repository in config.repositories
+            ),
+            key=lambda repository: repository["repo"],
+        )
+    }
+    content = json.dumps(normalized, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(content.encode("utf-8")).hexdigest()
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -382,9 +400,34 @@ def monitor(
     force_notify: bool = False,
     dry_run: bool = False,
 ) -> tuple[bool, list[str]]:
-    repository_states = state.setdefault("repositories", {})
+    stored_states = state.setdefault("repositories", {})
+    expected_fingerprint = config_fingerprint(config)
+    stored_fingerprint = state.get("config_fingerprint")
+    configured_repositories = {repository.repo.lower() for repository in config.repositories}
+    stored_repositories = {str(repository).lower() for repository in stored_states}
+
+    # Older state files do not have a fingerprint. If their repository keys do
+    # not match the current config, treat them as data from another deployment.
+    legacy_config_changed = (
+        stored_fingerprint is None and stored_repositories != configured_repositories
+    )
+    configuration_changed = (
+        (stored_fingerprint is not None and stored_fingerprint != expected_fingerprint)
+        or legacy_config_changed
+    )
+    repository_states = {} if configuration_changed else stored_states
     changed = False
     errors: list[str] = []
+
+    if configuration_changed:
+        print("检测到监控仓库配置变化，将清理旧状态并重新建立基线")
+    if not dry_run:
+        if configuration_changed:
+            state["repositories"] = repository_states
+            changed = True
+        if stored_fingerprint != expected_fingerprint:
+            state["config_fingerprint"] = expected_fingerprint
+            changed = True
 
     for repository in config.repositories:
         try:
