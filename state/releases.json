@@ -20,13 +20,13 @@
       "url": "https://github.com/mofeng-git/One-KVM/releases/tag/v260802"
     },
     "router-for-me/CLIProxyAPI": {
-      "name": "v7.2.144",
+      "name": "v7.2.145",
       "prerelease": false,
-      "published_at": "2026-08-27T21:02:24Z",
-      "recorded_at": "2026-08-27T21:07:00Z",
-      "release_id": 378122316,
-      "tag_name": "v7.2.144",
-      "url": "https://github.com/router-for-me/CLIProxyAPI/releases/tag/v7.2.144"
+      "published_at": "2026-08-28T09:30:32Z",
+      "recorded_at": "2026-08-28T18:28:58Z",
+      "release_id": 378380916,
+      "tag_name": "v7.2.145",
+      "url": "https://github.com/router-for-me/CLIProxyAPI/releases/tag/v7.2.145"
     },
     "seakee/CPA-Manager-Plus": {
       "name": "v1.12.6",
@@ -38,6 +38,6 @@
       "url": "https://github.com/seakee/CPA-Manager-Plus/releases/tag/v1.12.6"
     }
   },
-  "updated_at": "2026-08-28T05:34:30Z",
+  "updated_at": "2026-08-28T18:28:59Z",
   "version": 1
 }
