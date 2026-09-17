@@ -29,15 +29,15 @@
       "url": "https://github.com/router-for-me/CLIProxyAPI/releases/tag/v7.3.6"
     },
     "seakee/CPA-Manager-Plus": {
-      "name": "v1.12.14",
+      "name": "v1.13.0",
       "prerelease": false,
-      "published_at": "2026-09-16T13:52:21Z",
-      "recorded_at": "2026-09-16T15:30:21Z",
-      "release_id": 389970228,
-      "tag_name": "v1.12.14",
-      "url": "https://github.com/seakee/CPA-Manager-Plus/releases/tag/v1.12.14"
+      "published_at": "2026-09-17T10:26:12Z",
+      "recorded_at": "2026-09-17T11:31:20Z",
+      "release_id": 390616233,
+      "tag_name": "v1.13.0",
+      "url": "https://github.com/seakee/CPA-Manager-Plus/releases/tag/v1.13.0"
     }
   },
-  "updated_at": "2026-09-17T05:57:38Z",
+  "updated_at": "2026-09-17T11:31:20Z",
   "version": 1
 }
