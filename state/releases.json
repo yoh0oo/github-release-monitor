@@ -2,13 +2,13 @@
   "config_fingerprint": "844642e9d0c6f039a0f7649fe084027e2ebac6162938ef0129207eb7269acb22",
   "repositories": {
     "komari-monitor/komari": {
-      "name": "1.5.1",
+      "name": "1.6.0",
       "prerelease": false,
-      "published_at": "2026-09-24T15:21:45Z",
-      "recorded_at": "2026-09-24T16:56:55Z",
-      "release_id": 395818534,
-      "tag_name": "1.5.1",
-      "url": "https://github.com/komari-monitor/komari/releases/tag/1.5.1"
+      "published_at": "2026-10-16T00:38:48Z",
+      "recorded_at": "2026-10-16T01:06:41Z",
+      "release_id": 414410041,
+      "tag_name": "1.6.0",
+      "url": "https://github.com/komari-monitor/komari/releases/tag/1.6.0"
     },
     "mofeng-git/One-KVM": {
       "name": "One-KVM Rust 0.2.8（v261001）",
@@ -38,6 +38,6 @@
       "url": "https://github.com/seakee/CPA-Manager-Plus/releases/tag/v1.14.6"
     }
   },
-  "updated_at": "2026-10-15T15:17:15Z",
+  "updated_at": "2026-10-16T01:06:44Z",
   "version": 1
 }
